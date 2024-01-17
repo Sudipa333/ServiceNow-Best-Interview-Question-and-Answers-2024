@@ -1,0 +1,225 @@
+ServiceNow 911 Admin Level Important Topics---------
+  1.  What is data look ups?
+         When you want to populate any field values based on the some changes on metrics/other fields, then you can use Data loop ups.
+        Like after changing the 'impact' and 'urgency' field then the 'priority' field will be changed, it is not happening by script but for data look-ups.
+       You can create new data look ups on--- go to 'system policy', then 'data look up definitions'. give the name of the data look-ups , add the source table(in which table you're going to show the matching fields),matcher table (this table you will create according to your condition,with the fields you going to apply the data look-ups, matcher table must be extends to the 'Data Lookup Matcher Rules'),'run on form change', 'run on insert', 'run on update' checkboxes available to check according to your requirements. Then you have to add the 'matcher field definitions'(add the fields which acts as matcher, like impact and urgency),'setter field definition'(add the field which act as setter, like priority field,check the 'always replace' check if you want to change the value while changing any of the field value of matcher)
+    
+   2. List Context Menu Modification---
+        If you want to create any List Context Menu--- go to 'System UI' then 'UI Context Menu'. There are 3 types of context menus available for List--- header context menu, row context menu,title context menu. Different types available for these context menus ---like action, menu, separator, label, dynamic action.
+     To create some List Context Menu you have to write two scripts-- those are--a. Action script, b. onShow Script.  
+       a. Action script-- this is a script which executes on the client when the menu action occurs means when someone selects the context menu option . different methods available for action script like--- 'g_list'(used to execute the script on the list), 'g_fieldName' (used to run the script for the field name), 'g_sysId' (used to run the script for the row/form), 'rowSysId'(same use as g_sysId)
+      b. onShow Script--- onShow script runs before the context menu is displayed, to determine, which options appear in the context menu. After showing the options if you click any of then then the action script will run. It means onShow script will run before action script.
+
+   3. Document ID field explanation----
+        Document ID is a field type, it works like reference type but you can choose different tables at same time and choose their records.
+        In reference field you have the chance to choose the selected tables records, but using Document ID field you can alter the different tables and can choose their records. To make the Document ID field, go to your table where you want to add that field, right click -- configure-- dictionary, choose type as 'Document ID', give some name like 'test Doc ID' then save that form. after that go to that table, configure the form layout, add a new field of string type named 'Doc Reference',keep that field beside that 'test Doc ID' field. Then make the 'Doc Reference' field as the dependent of the field 'test Doc ID'. right click on the field 'test Doc ID' the go to ''configure dictionary'' --- to advance view , click 'Use dependant field' then choose the dependant on field as 'Doc Reference', the update that form. Now you can add any table name on 'Doc Reference' field and then you can choose the records of that table on 'test Doc ID' field.
+ 
+   4.  ServiceNow Email Filters----
+          If you want to avoid or block unwanted emails, move them to another place,or if you want to restrict your some specific emails to go outside of your instance, you should use Email Filters.
+            Go to 'System Mailbox',then go to--'filters'. create your own filters here, you can restrict different type of emails based on conditions you set. if you can't able to define your conditions, use script condition, submit the form. then in below section specify the 'filter action', you can move the unwanted email to the junk folder or marked them as ignored. If you want to block specific mail then you can write action script. But using only 'email filters' you can't block any gmail account as 'email filters' doesn't have the option called email account in condition filter. Then you have to go to---'System Address Filters'. create new filter,  give name, select if the filter if for outbound or inbound messages, then you have to create 'Email Address Filters', go to 'Email Address Filters', make new 'Email Address Filters', give name, select if you make this filter to deny the domain lists or allow the domain lists, then put the domain of the website/account(like 'gmail.com'), save the form, put the 'Email Address Filters' to the 'System Address Filters', then submit the form of 'System Address Filters'. You can check that specific domain email are coming or not by go to 'MailBox', your instance email address will be in this format 'dev******@servicenowdevelopers.com'.
+   
+     5. Email Digest of ServiceNow----
+          An Email Digest is a single email that summarize the activity for a selected notification and its target record, during a specified time interval. You can enable an email digest to reduce the number of notifications received when frequently updates to the associated record occur within a short time period.   
+        To configure the email digest, go to any notifications, click 'allow digest', the digest plugin is activated by default, so you can configure it in every notifications, choose your digest template on 'what digest will contain' section, write digest subject over there, write some text and add dynamic variables as your wish in 'Digest HTML'. you can also set the digest preferences that you want to show the digest option on notification, simply you have to go to 'user preference', then go to 'notification preferences', choose the notification category, then choose your notification name, then you can specify the 'Email Digest Interval',interval is for after how much time you want to get the email digest notification, you can create the time interval by go to the 'System Notification'--- 'Digest Intervals', then apply that intervals on the 'Email Digest Interval', or you can choose 'primary email', primary email will send normal notification, when the notification has been triggered. You will receive notification after that fixed time interval, if you set the email digest on any user's user preference. so check if any user has 'email digest' on r not before receive the notifications. to check notification you have to go to 'email logs'.
+
+     6. What is the Guest User in ServiceNow ?
+           One with no record in User table. Suppose somebody send email to your instance and that user and his email id is not included in the user table then all the activity done by that user will be saved in your instance as 'guest', caller will be shown as 'guest'.
+
+     7. What is Events in ServiceNow?
+         Events are special conditions that captured by the system when any condition happened, the events can be any actions. These events are stored in event logs ('sysevent') table. To create any event you have to register the event in 'Event Registry' under 'System Policy', you have to write the event name in such a way that anybody can understand, then select the table on which the event will be occured, then on 'fired by' field write from where the event script will be triggered(like business rule). then, write the script for that event on the business rule(or other what you choose in 'fired by' option in event registry). the event is fired by a perticular method name 'gs.eventQueue()', it takes two parameters as per condition. you can use these events on notification, by choosing the option when 'event is triggered', then choose the event name , those event name comes form event registry.   You can also trigger your event by putting details on event logs, then register it on event registry. 
+
+    8. What is Script Action in Event?
+           Script Actions are the scripts that executes only after the event is triggered. After the event is triggered by Business Rule, the script action will be executed, you can perform as some extends of the business rule on script action, like if you create the event to add new incident after updating the short description of any incident, then using script action you can update another details like description, category, state etc. on the new created incident. Script Include works asynchronously along with execution of event trigger in the background. Under 'system policy' you will find 'script action', example--
+                 on event registry, create an event name 'p1.incident', choose table incident, fired by business rule, open business rule, name 'Trigger P1', choose consition 'category change to harware', write script-- 
+                (gs.eventQueue('p1.incident',current,current.number,gs.getUserName());)
+create script action, name 'Create New P1' then choose event name 'p1.incident', write script, --
+                         p1();
+                         function p1(){
+                            var grIncident = new GlideRecord('incident');
+                            grIncident.initialize();
+                            grIncident.short_description = 'created via - '+ event.parm1;
+                            grIncident.category = 'hardware';
+                            grIncident.caller_id = event.parm2;
+                            grIncident.impact = '1';
+                            grIncident.urgency = '1';
+      
+                             grIncident.insert();
+                             //gs.log(''event log'' + grIncident.number);
+                            }
+
+    9. Stopwords in ServiceNow?
+         Stopwords helps to effeciently and quickly search in the searching fields, which words or letters or phases you will mention in the stopwords, it will going to ignore them and will only focus on important words on what you will write on the search bar. Go to --'predictive intelligence', --then go to 'stopwords'. write any words, or phases or letters as per your organization requirement, that helps the users to search quickly, remove obstacles for system to fetch the data from database quickly.
+
+   10. What is Reference Qualifier?
+          Reference Qualifier is related to reference field, that it qualifies the reference table records based on condition. Suppose you want to see the users who are active and gender is male on caller reference user table, you can customize that condition using reference qualifier. Simply go to the look-up field, right click, go to 'configure dictionary', then on 'reference specification' section choose 'Use regerence qualifier', 3 types of reference qualifier available --simple, dynamic, advance. based on reference qualifier select the 'reference qual condition', you can choose the advance option as reference qualifier so that you can write more critical conditions, most of the advance reference qualifier script write to invoke some script include, like this script(javascript: new GlobalRAScopeReferenceQualifier().targetQualifier(current);),here ReferenceQualifier() method is a script include name, where targetQualifier() is a function and cuurent is parameter.
+
+   11. Functional Field?
+          Create function fields and scripts in the Now Platofrm to perform common database transformations and calculations.
+          - Database server operate rather that application node
+          - You can not change the value of this field on client level
+          - You can create any functional field by configure any table, go to 'dictionary entry', create any type of field , check the checkbox of ''functional field'', then write the 'function definition', the script will be like--(glidefunction:length(short_description))this script use glidefunction property, it actually fetching the length of the short description, and showing the value on the table. (glidefunction:concat(number,'/',short_desciption)), it showing the number of the incident and the short description of the incident. if you do any mistake on the function definition then it will show 'invalid function'. 
+ 
+    12. ServiceNow Dictionary Override?
+           Use a dictionary override to allow a field in a child table to have a different attribute or behaviour than the same field in a parent table. As you know that incident table is an extends of task table, many fields of the incident table are also extends of task table, so using the dictionary override, you can modify some attributes of those fields only on incident table, without other tables who using the same fields. You have to go to the table where you want to modify some attribute of fields, then right click on that field,go to 'configure dictionary', go to 'dictionary overrides' section, on that section you will see the tables how use that field and use the dictionary override functionality, then click new, choose the table you want to make changes,the table should be the child table of parent table of that field,  there are 8 attributes available to modify the field, if the field s reference type then you can choose 'override reference qualifier', you can choose 'override default value' option to set some default value, you can 'override mandatory' , 'override readonly' , 'readonly', 'override attribute', 'override dependency' etc. then save the form. you can see that on selected table have those modification on that field, not on other tables. 
+
+    13. Dictionary Display Value?
+            Reference fields store a sys_id for each referenced record in the database, but the sys_id is not shown. why? because of Dictionary Display Value. reference field only pass the sys_id of the related table's records server to client side, but we can't see that sys'is on that reference field, by default the name of that record (whos sys_id is passing) is shown to us, and that is Dictionary Display value, you can change the dictionary display value, go to that reference field, see what is the reference table of that field, go to that table, then right click-- configure, then go to dictionary, choose any column name you want to display instead of the name column, make that column on display as true. the name column will be automatically become display as false,you don't have to change that. then you will see that selected column value will be shown on the field instead of the name column value. if that selected column value is empty then no value will be shown on the field. if you don't choose any column then name column value will be shown on that reference field.
+
+    14. Schema Map?
+            It is kind of graphical representation which will provide you that information about schema(meta-data), represents the relationship between tables. go to tables ,click your selected table, click on the related link 'show schema map'.
+  -Red color -- represents to show the referenced tables, if any field of the table(whose schema map you are checking) has refereced table, that referenced table will mark as red.
+  -Orange color-  represents to show referencing table, if any table has any reference field and that reference field's referenced table is your table(whose schema map you are checking) then that table will be marked as orange.
+  -Green color-- represents to show extended tables, if the table(whose schema map you are checking) has any parent table then that table will mark as green
+  -Blue color - represents to show extending table, those tables who extends your table, your table's child tables are marked as blue.
+ 
+    15. UI Pages in ServiceNow?
+            UI pages can be used to create and display forms, dislogs, lists and other UI components, This functionality requires a knowledge of HTML or Jelly. You can also create simple AngularJS applications using UI pages.go to 'System UI' then 'UI pages'. You can create UI pages for General purpose, for service portal, knowledge base, home page, html editor etc.
+in UI pages 3 different types of script you have to write to create UI page.
+          a. HTML - write code to give structure of your UI page, write code in HTML or in Jelly. 
+          b. Client Script in UI Page - Client-side Javascript that runs in the browser (e.g. functions called by buttons, etc.). It is intended to handle any client-side processing needed.
+          c. Processing Script- Script that runs on the server ehrn the page is submitted. This is useful if your page has a form(defined with the <g:ui_form> or <g:form> tags)
+       One example to make an UI page for incident table---
+         HTML--
+             <?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<g:ui_form id="f_id">
+	<center><h2> Incident Request Form </h2>
+	<table>
+	<tr>
+	<td>Requester : </td>
+    <td><g:ui_reference name="User_id" table="sys_user" field="name" id="Name"  displayvalue="${gs.getUser().getDisplayName()}" value="${gs.getUser()}"/> </td>
+	</tr>
+		<tr></tr>	
+	<tr>
+	<td>Category : </td>
+    <td> <select name="cat_id" id="c_id">
+		<option value="0">None</option>
+		<option value="inquiry">inquiry</option> 
+		<option value="software">software</option>
+		<option value="hardware">hardware</option>
+		<option value="network">network</option> 
+		<option value="database">database</option> 
+		</select>
+	</td>
+	</tr>
+		<tr><td>Short Description : </td><td><input type="text" name="sd_id"/></td></tr>
+		<tr><td>Description : </td><td><textarea name="des_id" rows="4" cols="50"></textarea></td></tr>
+		<tr><td><input type="submit" onClick="redirect()"/></td><td><input type="reset" name="reset" onClick="onReset()"/></td></tr>
+	</table>
+		
+		</center>
+		 </g:ui_form>
+</j:jelly>
+
+      Client Script-
+    function onReset() {
+	
+document.getElementById("f_id").reset(); // clear the form
+}
+    Processing Script--
+   var inc = new GlideRecord('incident');
+inc.initialize();
+inc.caller_id = User_id;
+inc.short_description = sd_id;
+inc.description = des_id;
+inc.category = cat_id;
+var sys_id = inc.insert();
+var URL = "https://dev189881.service-now.com/incident.do?sys_id=" + sys_id; // URL of newly created incident record
+response.sendRedirect(URL); //sendRedirect() method redirects the response to another resource, inside or outside the server.
+
+   these script will create a simple incident form, that helps you to quickly submit the form as per client requirements, only have some required fields (as you can check the processing script), you have to select any user role to create the UI page. click 'try it' button to see UI page.
+
+  16.   What is Database view?
+         ServiceNow report use single table to create report, but if your data resides in many tables then you have to use Database view.
+          Under 'System Definition' you will find 'Database view'. Here we can combine different tables writing the 'where clause' on the tables, then using the merge reultant table, you can create your desirable reports. to explore, how the database view combine the tables click the 'incident_matric' table in database view.  click on 'try it' related link on database view form to see the combine table, on that combine table you can create reports, but you can't modify the values of the table.
+
+   17. Annotation in ServiceNow?
+          Annotations are used to give some messages, or information about the field in the form. Go to 'form layout' on the form you want to add annotation, choose the annotation, select that to your selected table and keep annotation after any field. There are different kind of annotation available, like 'info box blue','info box red','line separator','plain text','section details' etc. 8 different out of box annotation available. You can create your own style for annotation by go to 'form annotation types', then choose 'plain text' or 'HTML', plain to provide simple text or 'HTML' to customize the text.
+
+   18. UI Policy?
+           UI Policy executes on client side, it loads faster that client script. so it is preferable to use UI policy than Client script. UI Policy works on 3 types of UI Policy Actions-- Mandatory/Non-Mandatory, Visible/Hidden, Read-only/Editable. If you check the option 'inherit' on UI Policy then on the child table UI policy execution will complete first then on parent table. write the UI Policy will execute on 'When to Apply' section, check 'global' ption if your UI is on global view, check 'on load' option if ou want to see the UI Policy Actions during on load of your UI, check 'reverse if false' if you don't want to see the UI Policy Action applied if the event does not occur, check the 'inherit' option if you want that the UI Policy also works on your parent or child table, then must fill the UI Policy Action, there you have to choose the field name where you want to apply the UI Policy Action and then check the mandatory , visibility , readonly option as per requirements. if your UI Policy Actions does not met your requirements then you can use script section. execute if true and execute if false script options available.
+
+    19. UI Action?
+           UI Action helps to set button, links, choices on form UI. go to 'System Definition' --'UI Action', or you can simply right click on the form,can go to 'UI Action'. on 'UI Action' form choose the table name where you want to add action. when you work on the server side UI action, like after some condition matching, new child incident will be created automatically, then you have to write server-side script,in that case you have to write 'Action name', choose 'show insert' to show the ui action while inserting your information, or 'show update' to show your ui action while updating your form, check 'client' checkbox when you have to write the client-side script, like after clicking some link the alert will pop-up, in that case you have to check the 'client' checkbox. when you check the 'client' checkbox 'Onclick' box will appear on the form, write the function name you going to use on your client script (like for example,checkTest()), then 'Live v2 compatible','Live v3 compatible' are the options for view, in which view you want to showcase your UI Actions, choose 'overrides' option if you want to override any existing ui action, in 'messages' field you can write some messages you want to attach with your ui action, 'comments' option helps to pass comments to other users, 'hint' to simply show some messages while hovering over your ui action, after then you have to choose the action, 8 types of ui action available-- form button, form context menu, form link, form style, list banner button, list bottom button, list context menu, list choice, list link.
+
+     20. Name -Value Field?
+             Name-Value field is special type of field, where you can add field name and value together, clicking on + sign you can add bothof them and clicking on - sign you can delete the pair. simply go to the table you want to add the field, open new form , right click -- configure--dictionary, choose type 'Name-Value Pairs'. you can add name-value pairs manully on the form or you can add those using script, like this--  
+            sample script--- var gr = new GlideRecord('incident');
+                                      gr.addQuery('number','INC0010025');
+                                      gr.query();
+                                      if(gr.next()){
+                                        gr.u_test_name_value.street = ''No 3'';// street is the name, and value is 'No 3'
+                                        gr.update();
+                           
+                                        gs.print(gr.u_test_name_value);//it print the whole list of name-value pairs {''name'':''value'',''name1'':''value1''}
+                                        gs.print(gr.u_test_name_value.Country);//it prints only the value of Country,write the name as you write on the field
+                                      for(var name in gr.u_test_name_value){
+                                       gs.print(name +'' = ''+ gr.u_test_name_value[name]);// it prints all the name of the list of name-value pairs
+                                           }
+                                         }
+
+      21. Data Policy VS UI Policy?
+             you can make field mandatory, hidden , readonly using UI Policy. UI Policy works on client side, but if the record comes from the import sets or external web service then UI Policy will not work, then Data Policy can do the same work, it works on server side. the data policy just works as UI policy, go to 'system policy' then 'data policies', you can choose 'apply to import set' if your records come from import set or if your records come from 'SOAP' api then you can choose 'apply to SOAP', or you can use your data policy as ui policy on client side, you can add condition and you can add data policy rules a per your requirements, this is similar to UI Policy Actions.
+
+      22. What is Field Normalization?
+               In ServiceNow database, datas are coming from different data sources by manually, by discovery, by imports and different data sources like JDBC, HTTP/FTP, EXCEL, CSV, XML. so , for this reason the data structure of the database will be changed. when you import configuration items from discovery, some same data repeating can cause reporting and licensing reconciliation difficult,  example, 
+                 *Microsoft Windows 7 Professional
+                 *Microsoft Windows 7 Pro
+                 *Microsoft Windows Professional 7
+                 *Windows 7 Pro
+                 *Windows* 7 Pro
+                 *Windows * 7 Pro
+    all of these data are same, but if we don't normalize it, it will save these datas as different value, that can cause the-misrepresentation of data, duplicate the data, same data as different formatting, that creates non-integrated data and looks weird. so normalization will make these data as same value if we specify them. here 'Microsoft Windows 7 Professional' is the normalize form of these datas.
+
+   Normalization --
+        i. increased data integrity and reduced duplication
+        ii. consolidating multiple variations of the same value into a single simple recognizable value
+        iii. eliminates duplicate records
+        iv. provides better search results
+     for this you have to install the free plugin that is --- com.snc.field_normalization 
+     besides of normalized field there will be a fork sign, where the normalized value and pending values will be mentioned,you have to make normalize field
+
+      23. RollBack and Delete--
+                 in ServiceNow you can delete data or configurations. if your data delete mistakenly, then you can go to 'deleted records' under 'system definition', where you can find out out your deleted records on 'Audit Deleted Records', along with if you want to rollback your deleted patch updates, scripts-background scripts execution , database actions, and plugin activation, the whole instance of any version you can use 'rollback context', but if you want to rollback short portion of the 'rollback context' then you can use 'delete recovery', if you want to rolback any script execution specifically, you can go to 'script execution history'.
+                if you want to rollback configurations then go to update set. click on the globe icon on the banner frame and then click update set the click 'open list' hamburger icon, get the sysid of what you want to rollback then, go to that perticular record using sysid then you can choose any previous changes(version section) of that record then click 'revert to this version' related link, click proceed to get back that version.  
+
+       24. Suggestion in ServiceNow?
+              Beside of some fields you will notice one 'blub' icon is there, this give us suggestion to put the value on the field without writing it. so how to make suggestion in servicenow and how to avoid some suggestion that not required. so, search suggestions stores search strings entered by users in the 'Search Event' table[sys_search_event], then using 'Build search suggestions script' turn those search strings into search and auto-complete suggestions, finally, these suggestions are stored in a separate table that is search suggestion table
+(sys_search_suggestion).
+
+      25.  How to load data into ServiceNow?
+                 using import set you can load data from different sources,like from local files (excel ,csv, xml), from different data server(HTTP/FTP), using the different databases like JDBC(Java database connectivity), LDAP(lightweight directory access protocol), the data from these sources you can load to your to your instance using 'system import sets' then on 'load data' you can choose existing table that before you used as source data or you can create new source table,after choose the file or other source, upload it , after loading the data it will stay at new source table (you named) temporarily, then using transform map you will choose your target table where you want to update all the source data, you can check 'enfource mandatory field' on every field of the target table or your uploaded table so that if there any empty field then table will not be imported, then save the form, then in related links you will see 'Auto Map Matching Field', 'Mapping Assist' these will help you to match the source table field and target table fields, if target table and source table field name are same then you can choose 'Auto Map Match field' if they are not same then you can use 'Mapping Assist'.using Mapping Assist you have to map the source table field with target table field manually or you can choose existing 'field map' where your field mapping structure already exist, then save,go to related link 'transform', choose selected maps, click tramsform, then your data loading is completed.   
+
+       26. What is Team Development?
+                    Team Development supports parallel development on multiple, non-production ServiceNow instances. It allows developers to work on separate development instances while sharing code and resolving collisions throughout the development process. If all the developers work on same instance and at same time they make chnages on instance then one of the change can loss due to conflict, most of the time process collision will occur, and many more management problem, so on Team Development, your developers will work on different instances but your whole management will be centralize on single instance, then it will connect with production instance.
+           
+                      Development Environment                                                       Production Pipeline
+       Sub Dev 1 ------ Push and Pull--------
+         Team 1                                           |
+                                                                v
+       Sub Dev 2------- Push and Pull------->  Dev- Parent--> [upload tests]--->Test--->[update sets]-->Production
+         Team 2                                            ^
+                                                                  |
+       Sub Dev 3 ------- Push and Pull---------
+         Team 3     
+
+    Features of Team Development---
+        i. Compare a development instance to other development instances.
+        ii. Pushing and pulling record versions between instances.
+        iii. A central dashboard for all Team Development activities.
+   Points to be noticed--
+        i. An instance can have multiple peer instances but only one parent instance.
+        ii. The parent instance must be on the same release family.
+        iii. Do not use Team Development with production or test instances.
+ 
+    Go to Team Development','Team dashboard' there will be option to create 'parent instance', or you can create your remote instance on 'Remote Instances', there you can choose options that your remote instance should be 'development', 'production','test', give your instance URL, username, password. on 'Team dashboard' you can pull changes from your parent instance and push changes to the parent instance, compare the different developer instances, you can filter out your changes on the list, you can add the changes on queue or back out from the push process. If you want to push any changes first all it will reviewed then it will push to parent instance, for that you have to check the checkbox of 'properties' under the 'Team Development', 'Exclusion Policy' used to create such policy to modify the properties of push and pull, like if you don't want to use update logs on your instance during push or pull you can update that. after push process complete from your instance , on the parent instance you have to enable the 'properties' yes option, then one module will coming 'code review requests', there you check what changes come to instance, also there have 'back out' option will remove all the changes from your parent instances.
+
+   
+     27. What is ServiceNow Integration Hub?
+             Integration Hub is a framework used to interact with the third party applications of the ServiceNow. Developers can use IntegrationHub to build integration actions to execute commands against external platforms.
+     the ServiceNow IntegrationHub installer plugin is paid for debeloper instance but in PDI it is free for practice purpose, search 'IntegrationHub Starter Spokes',install the plugin then activate all the sub-plugins. Integration Hub includes steps to call REST APIs, run PowerShell commands, and write scripts to interact with other APIs. Example: Post news ro Slack, Microsoft teams, or other communication and  social media platforms.
+       A spoke is a scoped application that includes Flow Designer or IntegrationHub actions or subflows. A spoke is a logical grouping of related actions, subflows, and supporting application fields. Developers and Process Designers can reuse spoke logic in their own apllications. 
+   if you have Microsoft Teams Spoke then you can post message, post incident details, post problem detail, post change detail on the microsoft teams. 
+
+     28. Integration using Flow--
+             
